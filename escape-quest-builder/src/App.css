@@ -1,0 +1,60 @@
+import React, { useState } from 'react';
+import './index.css'; // <-- Подключаем стили прямо сюда
+import { initialQuest } from './initialQuest';
+import { QuestPlayer } from './QuestPlayer';
+import { FlowEditor } from './FlowEditor';
+import { Play, Network, LayoutTemplate } from 'lucide-react';
+
+function App() {
+  const [quest, setQuest] = useState(initialQuest);
+  const [activeTab, setActiveTab] = useState('editor');
+  const [selectedSceneId, setSelectedSceneId] = useState(quest.initialSceneId);
+
+  return (
+    <div className="app-container">
+      {/* Верхняя навигационная панель */}
+      <nav className="top-nav">
+        <div className="nav-brand">
+          <LayoutTemplate size={22} className="brand-icon" />
+          <span>КвестКонструктор</span>
+          <span className="quest-tag">{quest.title}</span>
+        </div>
+
+        <div className="nav-tabs">
+          <button
+            type="button"
+            className={`tab-btn ${activeTab === 'editor' ? 'tab-btn-active' : ''}`}
+            onClick={() => setActiveTab('editor')}
+          >
+            <Network size={16} /> Граф сценария
+          </button>
+          <button
+            type="button"
+            className={`tab-btn ${activeTab === 'player' ? 'tab-btn-active' : ''}`}
+            onClick={() => setActiveTab('player')}
+          >
+            <Play size={16} /> Запустить тест
+          </button>
+        </div>
+      </nav>
+
+      {/* Рабочая область */}
+      <main className="main-viewport">
+        {activeTab === 'editor' ? (
+          <FlowEditor
+            quest={quest}
+            setQuest={setQuest}
+            selectedSceneId={selectedSceneId}
+            onSelectScene={setSelectedSceneId}
+          />
+        ) : (
+          <div className="player-wrapper">
+            <QuestPlayer quest={quest} />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+export default App;
